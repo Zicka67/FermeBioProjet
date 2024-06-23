@@ -5,17 +5,18 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
-use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -27,7 +28,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -57,10 +58,20 @@ class RegistrationController extends AbstractController
             );
 
             // retrieve the target URL from the session
-            $session = $request->getSession();
             $targetPath = $session->get('_security.main.target_path');
 
             if ($targetPath) {
+                $session->remove('_security.main.target_path'); // Remove the target path from the session
+
+                // Check if there is a cart in the session and associate it with the user
+                $cart = json_decode($session->get('cart', json_encode([])), true);
+                if (!empty($cart)) {
+                    // Logic to associate the cart with the user
+                    // For example, save the cart items to the database for the user
+                    // ...
+                    $session->remove('cart'); // Remove the cart from the session
+                }
+
                 return $this->redirect($targetPath);
             }
 
@@ -73,8 +84,6 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form->createView(),
         ]);
     }
-
-    
 
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response

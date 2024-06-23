@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
-use App\Entity\CartItem;
 use App\Entity\Product;
-use App\Repository\CartRepository;
+use App\Entity\CartItem;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -16,22 +16,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CartController extends AbstractController
 {
     #[Route('/panier', name: 'app_cart')]
-    public function showCart(SessionInterface $session, CartRepository $cartRepository): Response
+    public function showCart(SessionInterface $session): Response
     {
-        $user = $this->getUser();
-        if ($user) {
-            $cart = $cartRepository->findOneBy(['user' => $user]);
-        } else {
-            $cart = json_decode($session->get('cart', json_encode([])), true);
+        $cart = json_decode($session->get('cart', json_encode([])), true);
+
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['product']['productPrice'] * $item['quantity'];
         }
 
         return $this->render('panier/index.html.twig', [
             'cart' => $cart,
+            'total' => $total,
         ]);
     }
 
     #[Route('/add-to-cart/{id}', name: 'add_to_cart')]
-    public function addToCart($id, ProductRepository $productRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    public function addToCart($id, ProductRepository $productRepository, SessionInterface $session): Response
     {
         $product = $productRepository->find($id);
 
@@ -39,26 +40,17 @@ class CartController extends AbstractController
             throw $this->createNotFoundException('Le produit n\'existe pas.');
         }
 
-        $user = $this->getUser();
-        if ($user) {
-            $cart = $entityManager->getRepository(Cart::class)->findOneBy(['user' => $user]);
-            if (!$cart) {
-                $cart = new Cart();
-                $cart->setUser($user);
-                $cart->setCreatedAt(new \DateTimeImmutable());
-                $entityManager->persist($cart);
-                $entityManager->flush();
+        $cart = json_decode($session->get('cart', json_encode([])), true);
+        $found = false;
+        foreach ($cart as &$item) {
+            if ($item['product']['id'] == $id) {
+                $item['quantity']++;
+                $found = true;
+                break;
             }
+        }
 
-            $cartItem = new CartItem();
-            $cartItem->setCart($cart);
-            $cartItem->setProduct($product);
-            $cartItem->setQuantity(1); 
-
-            $entityManager->persist($cartItem);
-            $entityManager->flush();
-        } else {
-            $cart = json_decode($session->get('cart', json_encode([])), true);
+        if (!$found) {
             $productData = [
                 'id' => $product->getId(),
                 'name' => $product->getName(),
@@ -73,8 +65,45 @@ class CartController extends AbstractController
                 'quantity' => 1
             ];
             $cart[] = $cartItem;
-            $session->set('cart', json_encode($cart));
         }
+
+        $session->set('cart', json_encode($cart));
+
+        return $this->redirectToRoute('app_cart');
+    }
+
+    #[Route('/increment-quantity/{id}', name: 'increment_quantity')]
+    public function incrementQuantity($id, SessionInterface $session): Response
+    {
+        $cart = json_decode($session->get('cart', json_encode([])), true);
+        foreach ($cart as &$item) {
+            if ($item['product']['id'] == $id) {
+                $item['quantity']++;
+                break;
+            }
+        }
+
+        $session->set('cart', json_encode($cart));
+
+        return $this->redirectToRoute('app_cart');
+    }
+
+    #[Route('/decrement-quantity/{id}', name: 'decrement_quantity')]
+    public function decrementQuantity($id, SessionInterface $session): Response
+    {
+        $cart = json_decode($session->get('cart', json_encode([])), true);
+        foreach ($cart as $key => &$item) {
+            if ($item['product']['id'] == $id) {
+                if ($item['quantity'] > 1) {
+                    $item['quantity']--;
+                } else {
+                    unset($cart[$key]);
+                }
+                break;
+            }
+        }
+
+        $session->set('cart', json_encode(array_values($cart))); // array_values pour réindexer le tableau
 
         return $this->redirectToRoute('app_cart');
     }
@@ -83,13 +112,11 @@ class CartController extends AbstractController
     public function validateCart(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         if (!$this->getUser()) {
-            // Stocke le panier dans la session avant de rediriger vers la page de connexion
             $session->set('cart_before_login', $session->get('cart', json_encode([])));
-            $session->set('target_path', $this->generateUrl('validate_cart'));
+            $session->set('_security.main.target_path', $this->generateUrl('validate_cart'));
             return $this->redirectToRoute('app_login'); 
         }
 
-        // Transfére le panier de la session à la base de données
         $cart = json_decode($session->get('cart', json_encode([])), true);
         if ($cart) {
             $user = $this->getUser();
@@ -98,7 +125,6 @@ class CartController extends AbstractController
             $cartEntity->setUser($user);
             $cartEntity->setCreatedAt(new \DateTimeImmutable());
             $entityManager->persist($cartEntity);
-            $entityManager->flush();
 
             foreach ($cart as $item) {
                 $cartItem = new CartItem();
@@ -110,10 +136,24 @@ class CartController extends AbstractController
 
             $entityManager->flush();
 
-            // Vide le panier de la session
+            // Suppression du panier de la session
             $session->remove('cart');
+
+            // Message de confirmation
+            $this->addFlash('success', 'Votre panier a bien été validé et enregistré.');
+        } else {
+            $this->addFlash('info', 'Votre panier est vide.');
         }
 
         return $this->redirectToRoute('app_cart');
     }
+
+    #[Route('/reset-cart', name: 'reset_cart')]
+    public function resetCart(SessionInterface $session): Response
+    {
+        $session->remove('cart');
+        $this->addFlash('info', 'Votre panier a été réinitialisé.');
+        return $this->redirectToRoute('app_cart');
+    }
 }
+

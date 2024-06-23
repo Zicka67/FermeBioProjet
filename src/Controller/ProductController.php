@@ -21,8 +21,7 @@ class ProductController extends AbstractController
     public function showFruits(ProductRepository $productRepository): Response
     {
         // On récupère tous les produits de la catégorie "fruit"
-        $fruits = $productRepository->findByCategoryId(2);
-        // dd($fruits);
+        $fruits = $productRepository->findByCategoryId(1);
 
         return $this->render('product/fruits.html.twig', [
             'fruits' => $fruits,
@@ -33,7 +32,7 @@ class ProductController extends AbstractController
     public function showLegumes(ProductRepository $productRepository): Response
     {
         // On récupère tous les produits de la catégorie "légume"
-        $legumes = $productRepository->findByCategoryId(1);
+        $legumes = $productRepository->findByCategoryId(2);
         // dd($legumes);
 
         return $this->render('product/legumes.html.twig', [
