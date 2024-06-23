@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos fruits{% endblock %}
+
+{% block body %}
+
+<a href="{{ path('app_home') }}">Accueil</a>
+
+    <h1>Fruits</h1>
+    <ul>
+        {% for fruit in fruits %}
+            <li>{{ fruit.name }} - {{ fruit.productPrice }} €</li>
+            <a href="{{ path('add_to_cart', { 'id': fruit.id }) }}">Ajouter au panier</a>
+        {% else %}
+            <li>Aucun fruit disponible pour le moment.</li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}

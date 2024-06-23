@@ -1,0 +1,162 @@
+/* Reset CSS */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+margin: 0;
+padding: 0;
+border: 0;
+font-size: 100%;
+font: inherit;
+vertical-align: baseline;
+}
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+display: block;
+}
+body {
+line-height: 1;
+}
+ol, ul, li, a {
+list-style: none;
+text-decoration: none;
+color: inherit;
+}
+blockquote, q {
+quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+content: '';
+content: none;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+
+/* **************** COLOR *********************** */
+
+:root {
+    --primary-color: #1a8fe3;
+    --secondary-color: #1b1b1b;
+    --tertiary-color: #f5f5f5;
+    --text-color: #333;
+    --title-color: #4a4a4a;
+    --navbar-color: rgba(255, 255, 255, 0.3);
+    --doree-color: #AB873D;
+    --red-color: #e83b3b;
+    --green-color: #4fcf57;
+    --darkPink-color: rgb(231, 127, 107);
+    --midPink-color: #f6cec8;
+    --lightPink-color: rgb(255, 242, 239); 
+    }
+
+h1 {
+    color: var(--red-color);
+}
+
+/* *********** NAV ******************  */
+
+nav {
+    background-color: bisque;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-left, .nav-center, .nav-right {
+  display: flex;
+}
+
+.nav-left {
+  margin-left: 10px;
+}
+
+.nav-right {
+  margin-right: 10px;
+  position: relative;
+}
+
+.nav-right a {
+  position: absolute;
+  right: 10px;
+}
+
+.nav-right a.active {
+  visibility: visible;
+}
+
+
+.nav-center {
+  padding-right: 150px;
+}
+
+.nav-center a {
+  margin: 0 10px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+#register {
+  margin-right: 80px;
+}
+
+/* ************* FOOTER ******************  */
+
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer {
+  margin-top: auto; 
+  background-color: aquamarine;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-left, .footer-center, .footer-right {
+    display: flex;
+    align-items: center;
+}
+
+.footer-right a {
+    margin-left: 10px;
+}
+
+.footer-center a {
+    /* margin: 0 auto;  */
+    margin-left: 180px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}

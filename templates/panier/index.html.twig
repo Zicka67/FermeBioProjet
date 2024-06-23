@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CartController!{% endblock %}
+
+{% block body %}
+
+<a href="{{ path('app_home') }}">Accueil</a>
+
+<h1>Mon Panier</h1>
+
+
+<ul>
+    {% if cart.cartItems is defined %}
+        {% for item in cart.cartItems %}
+            <li>{{ item.product.name }} - {{ item.product.productPrice }} € x {{ item.quantity }}</li>
+        {% endfor %}
+    {% elseif cart is iterable and cart|length > 0 %}
+        {% for item in cart %}
+            <li>{{ item.product.name }} - {{ item.product.productPrice }} € <br>
+                Quantité : {{ item.quantity }}</li>
+        {% endfor %}
+    {% else %}
+        <li>Votre panier est vide.</li>
+    {% endif %}
+</ul>
+
+
+<a href="{{ path('validate_cart') }}">Valider le panier</a>
+{% endblock %}
