@@ -8,30 +8,35 @@
 
 <h1>Mon Panier</h1>
 
-{% for label, messages in app.flashes %}
-    <div class="alert alert-{{ label }}">
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    {% if cart is empty or cart is null %}
+        <p>Votre panier est vide.</p>
+    {% else %}
+
+        <ul>
+            {% for item in cart %}
+                <li>
+                    <a href="{{ path('decrement_quantity', {'id': item.product.id}) }}">-</a>
+                    {{ item.product.name }} - {{ item.product.productPrice }} € x {{ item.quantity }}
+                    <a href="{{ path('increment_quantity', {'id': item.product.id}) }}">+</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <p>Total : {{ total }} €</p>
+
+    {% endif %}
+
+    <div>
+        <a href="{{ path('validate_cart') }}">Valider le panier</a>
+        <a href="{{ path('reset_cart') }}">Réinitialiser le panier</a>
     </div>
-{% endfor %}
-
-{% if cart is empty or cart is null %}
-    <p>Votre panier est vide.</p>
-{% else %}
-    <ul>
-        {% for item in cart %}
-            <li>
-                <a href="{{ path('decrement_quantity', {'id': item.product.id}) }}">-</a>
-                {{ item.product.name }} - {{ item.product.productPrice }} € x {{ item.quantity }}
-                <a href="{{ path('increment_quantity', {'id': item.product.id}) }}">+</a>
-            </li>
-        {% endfor %}
-    </ul>
-    <p>Total : {{ total }} €</p>
-{% endif %}
-
-<a href="{{ path('validate_cart') }}">Valider le panier</a>
-<a href="{{ path('reset_cart') }}">Réinitialiser le panier</a>
 
 {% endblock %}

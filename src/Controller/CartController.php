@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Cart;
 use App\Entity\Product;
 use App\Entity\CartItem;
+use Symfony\Component\Mime\Address;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -109,7 +113,7 @@ class CartController extends AbstractController
     }
 
     #[Route('/validate-cart', name: 'validate_cart')]
-    public function validateCart(SessionInterface $session, EntityManagerInterface $entityManager): Response
+    public function validateCart(SessionInterface $session, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         if (!$this->getUser()) {
             $session->set('cart_before_login', $session->get('cart', json_encode([])));
@@ -120,6 +124,10 @@ class CartController extends AbstractController
         $cart = json_decode($session->get('cart', json_encode([])), true);
         if ($cart) {
             $user = $this->getUser();
+            
+            if (!$user instanceof User) {
+                throw new \LogicException('L\'utilisateur courant n\'est pas une instance de l\'entité User.');
+            }
 
             $cartEntity = new Cart();
             $cartEntity->setUser($user);
@@ -136,17 +144,31 @@ class CartController extends AbstractController
 
             $entityManager->flush();
 
+            // Envoi de l'email de confirmation
+            $email = (new TemplatedEmail())
+                ->from(new Address('noreply@example.com', 'Votre Boutique'))
+                ->to($user->getEmail())
+                ->subject('Confirmation de votre commande')
+                ->htmlTemplate('emails/order_confirmation.html.twig')
+                ->context([
+                    'user' => $user,
+                    'cart' => $cart,
+                ]);
+
+            $mailer->send($email);
+
             // Suppression du panier de la session
             $session->remove('cart');
 
             // Message de confirmation
-            $this->addFlash('success', 'Votre panier a bien été validé et enregistré.');
+            $this->addFlash('success', 'Votre panier a bien été validé et enregistré. Un email de confirmation vous a été envoyé.');
         } else {
             $this->addFlash('info', 'Votre panier est vide.');
         }
 
         return $this->redirectToRoute('app_cart');
     }
+
 
     #[Route('/reset-cart', name: 'reset_cart')]
     public function resetCart(SessionInterface $session): Response
