@@ -12,6 +12,14 @@
 </div>
 {% endblock %}
 
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
 <div class="contact-header">
 <h1 class="contact-title">Vous souhaitez des informations sur un produits ? Vous souhaitez annuler une réservation ?</h1>
 </div>

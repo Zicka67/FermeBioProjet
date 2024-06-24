@@ -19,8 +19,8 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?int $product_price = null; 
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    private ?string $product_price = null;
 
     #[ORM\Column]
     private ?int $stock_quantity = null;
@@ -63,15 +63,14 @@ class Product
         return $this;
     }
 
-    public function getProductPrice(): ?int 
+    public function getProductPrice(): ?string
     {
         return $this->product_price;
     }
 
-    public function setProductPrice(int $product_price): static 
+    public function setProductPrice(?string $product_price): self
     {
         $this->product_price = $product_price;
-
         return $this;
     }
 
