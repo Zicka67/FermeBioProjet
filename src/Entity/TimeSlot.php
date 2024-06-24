@@ -14,7 +14,7 @@ class TimeSlot
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: 'date')]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]

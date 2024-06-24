@@ -160,3 +160,113 @@ a {
     text-decoration: none;
     color: black;
 }
+
+
+/* ************* CALENDRIER *************** */
+
+.calendar {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.calendar:hover {
+  cursor: pointer;
+}
+
+.calendar table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendar th, .calendar td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.td-hover:hover {
+  background-color: #d2acf7;
+
+}
+
+.calendar th {
+  background-color: #f2f2f2;
+}
+
+.date {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.slots {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.slot {
+  padding: 5px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.slot.morning {
+  background-color: #e6f3ff;
+}
+
+.slot.afternoon {
+  background-color: #fff0e6;
+}
+
+.slot:hover {
+  opacity: 0.8;
+}
+
+.calendar td.today {
+  border: 2px solid rgb(198, 52, 198);
+}
+.calendar td.today .date {
+  color: rgb(198, 52, 198);
+  font-weight: bold;
+}
+
+.calendar td.today {
+  border: 2px solid purple;
+}
+.calendar td.today .date {
+  color: purple;
+  font-weight: bold;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}

@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier de réservation{% endblock %}
+
+{% block body %}
+    <h1>Calendrier de réservation</h1>
+    
+    <div class="calendar">
+        <h2>{{ currentDate|date('F Y') }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Lun</th>
+                    <th>Mar</th>
+                    <th>Mer</th>
+                    <th>Jeu</th>
+                    <th>Ven</th>
+                    <th>Sam</th>
+                    <th>Dim</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set daysInWeek = 1 %}
+                {% for day in calendar %}
+                    {% if loop.first or daysInWeek == 1 %}
+                        <tr>
+                    {% endif %}
+                    <td class="{{ day.date|date('Y-m-d') == 'now'|date('Y-m-d') ? 'today' : '' }} td-hover">
+                        <div class="date">{{ day.date|date('d') }}</div>
+                        <div class="slots">
+                            {% if day.morning %}
+                                <button class="slot morning time-slot-button" data-date="{{ day.date|date('Y-m-d') }}" data-period="Matin">Matin</button>
+                            {% endif %}
+                            {% if day.afternoon %}
+                                <button class="slot afternoon time-slot-button" data-date="{{ day.date|date('Y-m-d') }}" data-period="Après-midi">Après-midi</button>
+                            {% endif %}
+                        </div>
+                    </td>
+                    {% if loop.last or daysInWeek == 7 %}
+                        </tr>
+                        {% set daysInWeek = 1 %}
+                    {% else %}
+                        {% set daysInWeek = daysInWeek + 1 %}
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Réserver un créneau</h2>
+            <p>Date sélectionnée: <span id="selectedDate"></span></p>
+            <button id="morningSlot">Matin</button>
+            <button id="afternoonSlot">Après-midi</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const modal = document.getElementById('reservationModal');
+            const span = document.getElementsByClassName("close")[0];
+            const selectedDateSpan = document.getElementById('selectedDate');
+
+            if (!modal || !span || !selectedDateSpan) {
+                console.error('Required elements are missing in the DOM.');
+                return;
+            }
+
+            document.querySelectorAll('.calendar td').forEach(cell => {
+                cell.addEventListener('click', function() {
+                    const date = this.querySelector('.date').textContent;
+                    const year = "{{ currentDate|date('Y') }}";
+                    const month = "{{ currentDate|date('m') }}";
+                    selectedDateSpan.textContent = `${year}-${month}-${date}`;
+                    modal.style.display = "block";
+                });
+            });
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            document.getElementById('morningSlot').addEventListener('click', function() {
+                reserveSlot('Matin');
+                modal.style.display = "none";
+            });
+
+            document.getElementById('afternoonSlot').addEventListener('click', function() {
+                reserveSlot('Après-midi');
+                modal.style.display = "none";
+            });
+
+            document.querySelectorAll('.time-slot-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const date = this.dataset.date;
+                    const period = this.dataset.period;
+
+                    fetch('/reserve-slot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ date: date, period: period })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('Time slot saved successfully!');
+                        } else {
+                            alert('Failed to save time slot.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while saving the time slot.');
+                    });
+                });
+            });
+
+            function reserveSlot(period) {
+                const date = selectedDateSpan.textContent;
+                fetch('/reserve-slot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        date: date,
+                        period: period
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Réservation réussie !');
+                    } else {
+                        alert('Erreur lors de la réservation : ' + (data.message || 'undefined'));
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Une erreur est survenue lors de la réservation.');
+                });
+            }
+        });
+    </script>
+{% endblock %}
