@@ -17,18 +17,18 @@ class CalendarController extends AbstractController
         $currentDate = new \DateTime();
         $year = $request->query->get('year', $currentDate->format('Y'));
         $month = $request->query->get('month', $currentDate->format('m'));
-    
+
         // $year et $month sont des entiers sinon ca affiche janvier 1970 et pas le jour même
         $year = (int)$year;
         $month = (int)$month;
-    
+
         $firstDayOfMonth = new \DateTime("$year-$month-01");
         $lastDayOfMonth = clone $firstDayOfMonth;
         $lastDayOfMonth->modify('last day of this month');
-    
+
         $timeSlots = $timeSlotRepository->findBetweenDates($firstDayOfMonth, $lastDayOfMonth);
         $calendar = $this->generateCalendarData($year, $month, $timeSlots);
-    
+
         return $this->render('calendar/index.html.twig', [
             'calendar' => $calendar,
             'year' => $year,
@@ -45,6 +45,8 @@ class CalendarController extends AbstractController
 
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $currentDate = new \DateTime("$year-$month-$day");
+            $currentDate->modify('+1 day'); // Ajouter un jour pour corriger le décalage sinon ca ne fonctionne pas
+
             $dayTimeSlots = array_filter($timeSlots, function($slot) use ($currentDate) {
                 return $slot->getDate()->format('Y-m-d') === $currentDate->format('Y-m-d');
             });

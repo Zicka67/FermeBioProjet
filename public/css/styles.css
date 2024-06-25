@@ -47,6 +47,7 @@ border-spacing: 0;
 html, body {
     height: 100%;
     margin: 0;
+    font-family: "Questrial", sans-serif;
 }
 
 html {
@@ -91,11 +92,13 @@ nav {
 
 .nav-left {
   margin-left: 10px;
+  font-size: 1.5rem;
 }
 
 .nav-right {
   margin-right: 10px;
   position: relative;
+  font-size: 1.2rem;
 }
 
 .nav-right a {
@@ -114,6 +117,8 @@ nav {
 
 .nav-center a {
   margin: 0 10px;
+  font-size: 1.2rem;
+  font-weight: 400;
 }
 
 a {
@@ -165,6 +170,7 @@ a {
 /* ************* CALENDRIER *************** */
 
 .calendar {
+  font-family: Arial, sans-serif;
   max-width: 800px;
   margin: 0 auto;
 }
@@ -175,7 +181,8 @@ a {
 
 .calendar table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 5px;
 }
 
 .calendar th, .calendar td {
@@ -184,18 +191,18 @@ a {
   text-align: center;
 }
 
-.td-hover:hover {
+/* .td-hover:hover {
   background-color: #d2acf7;
+} */
 
-}
-
-.calendar th {
+/* .calendar th {
   background-color: #f2f2f2;
-}
+} */
 
 .date {
   font-weight: bold;
   margin-bottom: 5px;
+  margin-left: 5px;
 }
 
 .slots {
@@ -205,40 +212,76 @@ a {
 }
 
 .slot {
+  display: block;
+  width: 100%;
   padding: 5px;
+  margin: 2px 0;
   border: none;
-  border-radius: 3px;
+  /* border-radius: 4px; */
+  background-color: #007bff;
+  color: white;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .slot.morning {
-  background-color: #e6f3ff;
+  background-color: #8f4501;
+}
+
+.slot.morning:hover {
+  background-color: #7a3b00;
 }
 
 .slot.afternoon {
-  background-color: #fff0e6;
+  background-color: #2d7b00;
+}
+
+.slot.afternoon:hover {
+  background-color: #276900;
 }
 
 .slot:hover {
-  opacity: 0.8;
+  background-color: #0056b3;
+  /* transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); */
 }
 
-.calendar td.today {
+/* .calendar td.today {
   border: 2px solid rgb(198, 52, 198);
+} */
+
+.calendar td {
+  background-color: #f0f0f0;
+  transition: all 0.3s ease;
 }
-.calendar td.today .date {
+
+.calendar td:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* .calendar td.today .date {
   color: rgb(198, 52, 198);
   font-weight: bold;
+} */
+
+.close-calendar {
+  font-size: 24px;
+  cursor: pointer;
+  float: right;
 }
 
-.calendar td.today {
-  border: 2px solid purple;
-}
+/* .calendar td.today {
+  border: 2px solid rgb(255, 174, 0);
+} */
+
 .calendar td.today .date {
-  color: purple;
+  color: rgb(255, 174, 0);
   font-weight: bold;
 }
+
+/* Style pour le modal */
 .modal {
   display: none;
   position: fixed;
@@ -250,6 +293,7 @@ a {
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
 }
+
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto;
@@ -257,16 +301,21 @@ a {
   border: 1px solid #888;
   width: 80%;
   max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
+
 .close {
   color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
+  cursor: pointer;
 }
+
 .close:hover,
 .close:focus {
-  color: black;
+  color: #000;
   text-decoration: none;
   cursor: pointer;
 }
@@ -274,121 +323,4 @@ a {
 
 /* CART  */
 
- .cart-sidebar {
-  position: fixed;
-  top: 0;
-  right: -450px;
-  width: 400px;
-  height: 100%;
-  background-color: white;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-  transition: right 0.3s ease-in-out;
-  z-index: 9999;
-  overflow-y: auto;
-  padding: 20px;
-}
-.cart-sidebar.open {
-  right: 0;
-}
-.cart-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1001;
-  cursor: pointer;
-  background-color: #f8f9fa;
-  padding: 10px;
-  border-radius: 5px;
-}
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-}
-.cart-item-details {
-  display: flex;
-  align-items: center;
-}
-.cart-item-image {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-  object-fit: cover;
-}
-.cart-item-quantity {
-  display: flex;
-  align-items: center;
-}
-.quantity-btn {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  padding: 5px 10px;
-  margin: 0 5px;
-  cursor: pointer;
-}
-.cart-footer {
-  margin-top: 20px;
-  border-top: 1px solid #eee;
-  padding-top: 20px;
-}
-.button {
-  display: inline-block;
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-right: 10px;
-}
-.cart-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.close-cart {
-  font-size: 24px;
-  cursor: pointer;
-}
-.subtotal {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-#cartSidebar {
-    transition: transform 0.3s ease;
-    transform: translateX(100%);
-    position: fixed;
-    right: 0;
-    top: 0;
-    height: 100%;
-    width: 300px;
-    background: white;
-    /* box-shadow: -2px 0 5px rgba(0,0,0,0.5);  */
-    z-index: 9999;
-} 
-
- #cartSidebar.open {
-    transform: translateX(0); 
-} 
-
-.page-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
-  z-index: 9998; 
-}
-
-.page-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
+ 

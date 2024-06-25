@@ -1,7 +1,7 @@
 <div id="pageOverlay" class="page-overlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-title">
-        <h2>Panier</h2>
+        <h2>Votre panier</h2>
         <span class="close-cart toggle-cart">×</span> 
     </div>
     {% if app.flashes %}
@@ -13,7 +13,7 @@
             </div>
         {% endfor %}
     {% endif %}
-    {% if cart is defined and cart is not empty %}
+    {% if cart is defined and cart|length > 0 %}
         {% for item in cart %}
             <div class="cart-item">
                 <div class="cart-item-details">
@@ -31,14 +31,30 @@
         {% endfor %}
         <div class="cart-footer">
             <div class="subtotal">
-                <span>Sous-total</span>
-                <span>{{ cartTotal }} €</span>
+                <span>Vous devrez payer sur place :</span>
+                <span id="cart-total" data-total="{{ cartTotal }}">{{ cartTotal }}0 €</span>
             </div>
-            <a href="{{ path('validate_cart') }}" class="button">Passer la commande</a>
-            <a id="reset-button" href="{{ path('reset_cart') }}" class="button">Réinitialiser le panier</a>
+            <div class="cart-buttons">
+                <a id="reset-button" href="{{ path('reset_cart') }}" class="button">Réinitialiser le panier</a>
+                <a id="pickupOption" href="#" class="button">Sélectionner le jour</a>
+                {# <button id="pickupOption" class="button">Sélectionner le jour</button> #}
+            </div>
         </div>
+        
     {% else %}
         <p>Votre panier est vide.</p>
     {% endif %}
 </div>
 
+<div class="pickup-details-page">
+    <div class="calendar-header">
+        <h3>Veuillez choisir une date pour récupérer votre panier:</h3>
+        <span class="close-calendar">&times;</span>
+    </div>
+    {# <p>Veuillez choisir une date pour récupérer votre panier:</p> #}
+    <select id="pickupLocation">
+        <option value="location1">Adresse 1</option>
+        <option value="location2">Adresse 2</option>
+    </select>
+    <div id="calendarContainer"></div>
+</div>

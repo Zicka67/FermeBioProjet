@@ -105,4 +105,10 @@ class RegistrationController extends AbstractController
 
         return $this->redirectToRoute('app_register');
     }
+
+    #[Route('/reservation-success', name: 'reservation_success')]
+    public function success()
+    {
+        return $this->render('message/reservation_success.html.twig');
+    }
 }
