@@ -1,18 +1,16 @@
 <nav>
-
     <div class="nav-left">
         <a href="{{ path('app_home') }}">NomDuSite</a>
     </div>
-
     <div class="nav-center">
         <a href="{{ path('app_home') }}">Accueil</a>
         <a href="{{ path('app_fruits') }}">Nos fruits</a>
         <a href="{{ path('app_legumes') }}">Nos légumes</a>
-        <a href="{{ path('app_cart') }}">Mon panier</a>
+        <a href="javascript:void(0)" class="toggle-cart">Panier</a>
+        {# <a href="{{ path('app_cart') }}">🛒Panier</a>  #}
         <a href="{{ path('app_calendar') }}">Calendrier</a>
         <a href="{{ path('contacts') }}">Contact</a>
     </div>
-    
     <div class="nav-right">
         {% if not app.user %}
             <a href="{{ path('app_register') }}" id="register">Inscription</a>
@@ -23,5 +21,4 @@
             <a href="{{ path('app_login') }}" id="login">Connexion</a>
         {% endif %}
     </div>
-
 </nav>

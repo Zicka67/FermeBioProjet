@@ -36,50 +36,50 @@ class CartController extends AbstractController
     }
 
     #[Route('/add-to-cart/{id}', name: 'add_to_cart')]
-public function addToCart($id, ProductRepository $productRepository, SessionInterface $session, Request $request): Response
-{
-    $product = $productRepository->find($id);
+    public function addToCart($id, ProductRepository $productRepository, SessionInterface $session, Request $request): Response
+    {
+        $product = $productRepository->find($id);
 
-    if (!$product) {
-        throw $this->createNotFoundException('Le produit n\'existe pas.');
-    }
-
-    $cart = json_decode($session->get('cart', json_encode([])), true);
-    $found = false;
-    foreach ($cart as &$item) {
-        if ($item['product']['id'] == $id) {
-            $item['quantity']++;
-            $found = true;
-            break;
+        if (!$product) {
+            throw $this->createNotFoundException('Le produit n\'existe pas.');
         }
+
+        $cart = json_decode($session->get('cart', json_encode([])), true);
+        $found = false;
+        foreach ($cart as &$item) {
+            if ($item['product']['id'] == $id) {
+                $item['quantity']++;
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            $productData = [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'productPrice' => $product->getProductPrice(),
+                'stock_quantity' => $product->getStockQuantity(),
+                'description' => $product->getDescription(),
+                'isActive' => $product->isActive(),
+                'category' => $product->getCategory()->getName()
+            ];
+            $cartItem = [
+                'product' => $productData,
+                'quantity' => 1
+            ];
+            $cart[] = $cartItem;
+        }
+
+        $session->set('cart', json_encode($cart));
+
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            return $this->redirect($referer);
+        }
+
+        return $this->redirectToRoute('app_cart');
     }
-
-    if (!$found) {
-        $productData = [
-            'id' => $product->getId(),
-            'name' => $product->getName(),
-            'productPrice' => $product->getProductPrice(),
-            'stock_quantity' => $product->getStockQuantity(),
-            'description' => $product->getDescription(),
-            'isActive' => $product->isActive(),
-            'category' => $product->getCategory()->getName()
-        ];
-        $cartItem = [
-            'product' => $productData,
-            'quantity' => 1
-        ];
-        $cart[] = $cartItem;
-    }
-
-    $session->set('cart', json_encode($cart));
-
-    $referer = $request->headers->get('referer');
-    if ($referer) {
-        return $this->redirect($referer);
-    }
-
-    return $this->redirectToRoute('app_cart');
-}
 
 
     #[Route('/increment-quantity/{id}', name: 'increment_quantity')]

@@ -16,7 +16,6 @@
         <title>{% block title %}Bienvenue{% endblock %}</title>
         {# <link rel="icon" href="{{ asset('img/') }}"> #}
         
-        
         {# CSS #}
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
         {# FONTS #}
@@ -24,7 +23,6 @@
 
         {% block stylesheets %}
         {% endblock %}
-
 
     </head>
 
@@ -40,10 +38,13 @@
 
         </div>
 
+        {% include "_partials/_panier.html.twig" %}
+      
 
-        {% block javascripts %}
-        {# <script src="{{ asset('js/calendar.js') }}"></script> #}
-        {% endblock %}
+    {% block javascripts %}
+        <script src="{{ asset('js/panier.js') }}"></script>
+    {% endblock %}
 
     </body>
+
 </html>

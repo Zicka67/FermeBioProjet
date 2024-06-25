@@ -270,3 +270,125 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+
+
+/* CART  */
+
+ .cart-sidebar {
+  position: fixed;
+  top: 0;
+  right: -450px;
+  width: 400px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 9999;
+  overflow-y: auto;
+  padding: 20px;
+}
+.cart-sidebar.open {
+  right: 0;
+}
+.cart-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+}
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+.cart-item-details {
+  display: flex;
+  align-items: center;
+}
+.cart-item-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  object-fit: cover;
+}
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+}
+.quantity-btn {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+.cart-footer {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+.button {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+.cart-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.close-cart {
+  font-size: 24px;
+  cursor: pointer;
+}
+.subtotal {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#cartSidebar {
+    transition: transform 0.3s ease;
+    transform: translateX(100%);
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 300px;
+    background: white;
+    /* box-shadow: -2px 0 5px rgba(0,0,0,0.5);  */
+    z-index: 9999;
+} 
+
+ #cartSidebar.open {
+    transform: translateX(0); 
+} 
+
+.page-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  z-index: 9998; 
+}
+
+.page-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}

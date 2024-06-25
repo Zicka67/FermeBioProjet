@@ -1,0 +1,44 @@
+<div id="pageOverlay" class="page-overlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-title">
+        <h2>Panier</h2>
+        <span class="close-cart toggle-cart">×</span> 
+    </div>
+    {% if app.flashes %}
+        {% for label, messages in app.flashes %}
+            <div class="alert alert-{{ label }}">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if cart is defined and cart is not empty %}
+        {% for item in cart %}
+            <div class="cart-item">
+                <div class="cart-item-details">
+                    <div>
+                        <strong>{{ item.product.name }}</strong><br>
+                        {{ item.product.productPrice }} €
+                    </div>
+                </div>
+                <div class="cart-item-quantity">
+                    <a href="{{ path('decrement_quantity', { 'id': item.product.id }) }}" class="quantity-btn">-</a>
+                    <span>{{ item.quantity }}</span>
+                    <a href="{{ path('increment_quantity', { 'id': item.product.id }) }}" class="quantity-btn">+</a>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="cart-footer">
+            <div class="subtotal">
+                <span>Sous-total</span>
+                <span>{{ cartTotal }} €</span>
+            </div>
+            <a href="{{ path('validate_cart') }}" class="button">Passer la commande</a>
+            <a id="reset-button" href="{{ path('reset_cart') }}" class="button">Réinitialiser le panier</a>
+        </div>
+    {% else %}
+        <p>Votre panier est vide.</p>
+    {% endif %}
+</div>
+
