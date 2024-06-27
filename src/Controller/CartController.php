@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Cart;
+use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\CartItem;
 use Symfony\Component\Mime\Address;
@@ -14,26 +14,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CartController extends AbstractController
 {
-    #[Route('/panier', name: 'app_cart')]
-    public function showCart(SessionInterface $session): Response
-    {
-        $cart = json_decode($session->get('cart', json_encode([])), true);
+    // #[Route('/panier', name: 'app_cart')]
+    // public function showCart(SessionInterface $session): Response
+    // {
+    //     $cart = json_decode($session->get('cart', json_encode([])), true);
 
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['product']['productPrice'] * $item['quantity'];
-        }
+    //     $total = 0;
+    //     foreach ($cart as $item) {
+    //         $total += $item['product']['productPrice'] * $item['quantity'];
+    //     }
 
-        return $this->render('panier/index.html.twig', [
-            'cart' => $cart,
-            'total' => $total,
-        ]);
-    }
+    //     return $this->render('panier/index.html.twig', [
+    //         'cart' => $cart,
+    //         'total' => $total,
+    //     ]);
+    // }
 
     #[Route('/add-to-cart/{id}', name: 'add_to_cart')]
     public function addToCart($id, ProductRepository $productRepository, SessionInterface $session, Request $request): Response
@@ -81,9 +82,8 @@ class CartController extends AbstractController
         return $this->redirectToRoute('app_cart');
     }
 
-
-    #[Route('/increment-quantity/{id}', name: 'increment_quantity')]
-    public function incrementQuantity($id, SessionInterface $session): Response
+    #[Route('/increment-quantity/{id}', name: 'increment_quantity', methods: ['POST'])]
+    public function incrementQuantity($id, SessionInterface $session): JsonResponse
     {
         $cart = json_decode($session->get('cart', json_encode([])), true);
         foreach ($cart as &$item) {
@@ -95,11 +95,15 @@ class CartController extends AbstractController
 
         $session->set('cart', json_encode($cart));
 
-        return $this->redirectToRoute('app_cart');
+        $total = array_reduce($cart, function($carry, $item) {
+            return $carry + ($item['product']['productPrice'] * $item['quantity']);
+        }, 0);
+
+        return new JsonResponse(['status' => 'success', 'cart' => $cart, 'cartTotal' => $total]);
     }
 
-    #[Route('/decrement-quantity/{id}', name: 'decrement_quantity')]
-    public function decrementQuantity($id, SessionInterface $session): Response
+    #[Route('/decrement-quantity/{id}', name: 'decrement_quantity', methods: ['POST'])]
+    public function decrementQuantity($id, SessionInterface $session): JsonResponse
     {
         $cart = json_decode($session->get('cart', json_encode([])), true);
         foreach ($cart as $key => &$item) {
@@ -113,9 +117,22 @@ class CartController extends AbstractController
             }
         }
 
-        $session->set('cart', json_encode(array_values($cart))); // array_values pour réindexer le tableau
+        // Re-index the array after removal
+        $cart = array_values($cart);
+        $session->set('cart', json_encode($cart));
 
-        return $this->redirectToRoute('app_cart');
+        $total = array_reduce($cart, function($carry, $item) {
+            return $carry + ($item['product']['productPrice'] * $item['quantity']);
+        }, 0);
+
+        return new JsonResponse(['status' => 'success', 'cart' => $cart, 'cartTotal' => $total]);
+    }
+
+    #[Route('/reset-cart', name: 'reset_cart', methods: ['POST'])]
+    public function resetCart(SessionInterface $session): JsonResponse
+    {
+        $session->remove('cart');
+        return new JsonResponse(['status' => 'success']);
     }
 
     #[Route('/validate-cart', name: 'validate_cart')]
@@ -174,14 +191,4 @@ class CartController extends AbstractController
 
         return $this->redirectToRoute('app_cart');
     }
-
-
-    #[Route('/reset-cart', name: 'reset_cart')]
-    public function resetCart(SessionInterface $session): Response
-    {
-        $session->remove('cart');
-        $this->addFlash('info', 'Votre panier a été réinitialisé.');
-        return $this->redirectToRoute('app_cart');
-    }
 }
-

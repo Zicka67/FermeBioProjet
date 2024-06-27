@@ -2,7 +2,7 @@
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-title">
         <h2>Votre panier</h2>
-        <span class="close-cart toggle-cart">×</span> 
+        <span class="close-cart toggle-cart">×</span>
     </div>
     {% if app.flashes %}
         {% for label, messages in app.flashes %}
@@ -23,38 +23,49 @@
                     </div>
                 </div>
                 <div class="cart-item-quantity">
-                    <a href="{{ path('decrement_quantity', { 'id': item.product.id }) }}" class="quantity-btn">-</a>
+                    <button class="quantity-btn decrement" data-product-id="{{ item.product.id }}">-</button>
                     <span>{{ item.quantity }}</span>
-                    <a href="{{ path('increment_quantity', { 'id': item.product.id }) }}" class="quantity-btn">+</a>
+                    <button class="quantity-btn increment" data-product-id="{{ item.product.id }}">+</button>
+                    <span class="total-price-for-item">{{ (item.product.productPrice * item.quantity)|number_format(2, '.', ',') }} €</span>
                 </div>
             </div>
         {% endfor %}
-        <div class="cart-footer">
+        <div class="cart-footer">   
             <div class="subtotal">
                 <span>Vous devrez payer sur place :</span>
-                <span id="cart-total" data-total="{{ cartTotal }}">{{ cartTotal }}0 €</span>
+                <span id="cart-total">{{ cartTotal|number_format(2, '.', ',') }} €</span>
             </div>
             <div class="cart-buttons">
-                <a id="reset-button" href="{{ path('reset_cart') }}" class="button">Réinitialiser le panier</a>
-                <a id="pickupOption" href="#" class="button">Sélectionner le jour</a>
-                {# <button id="pickupOption" class="button">Sélectionner le jour</button> #}
+                {# Si l'utilisateur est co #}
+                {% if app.user %}
+                <button id="reset-button" class="button">Réinitialiser le panier</button>
+                    <a id="pickupOption" href="#" class="button">Sélectionner le jour</a>
+                {# Si l'utilisateur est PAS co #}
+                {% else %}
+                <button id="reset-button" class="button">Réinitialiser le panier</button>
+                    <p id="loginMessage">Vous devez vous connecter pour poursuivre.</p>
+                    <a class="button" href="{{ path('contact') }}">Me connecter</a>
+                    <a id="pickupOption" href="#" class="button button-disabled">Sélectionner le jour</a>
+                {% endif %}
             </div>
         </div>
-        
     {% else %}
-        <p>Votre panier est vide.</p>
+        <p class="empty-cart-message">Votre panier est vide.</p>
     {% endif %}
 </div>
-
 <div class="pickup-details-page">
     <div class="calendar-header">
         <h3>Veuillez choisir une date pour récupérer votre panier:</h3>
         <span class="close-calendar">&times;</span>
     </div>
-    {# <p>Veuillez choisir une date pour récupérer votre panier:</p> #}
     <select id="pickupLocation">
         <option value="location1">Adresse 1</option>
         <option value="location2">Adresse 2</option>
     </select>
     <div id="calendarContainer"></div>
+    <div>
+        <span>Vous devrez payer : <span id="calendar-cart-total">{{ cartTotal|number_format(2, ',', ' ') }} €</span></span>
+    </div>
+    <button id="validateOrderButton" class="validate-order-button">Valider la commande</button>
 </div>
+

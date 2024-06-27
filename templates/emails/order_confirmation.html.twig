@@ -5,7 +5,6 @@
     <title>Confirmation de votre commande</title>
 </head>
 <body>
-    {# Demander le pseudo ou nom à l'enregistrement et remplacer le mail ici par ca ?#}
     <h1>Bonjour {{ user.email }},</h1>
 
     <p>Merci pour votre commande. Voici les détails de votre panier :</p>
@@ -16,9 +15,10 @@
         {% endfor %}
     </ul>
 
+    <p>Votre commande sera à chercher le {{ timeslot.date|date('d/m/Y') }} {{ timeslot.period }}</p>
+
     <p>Nous vous remercions de votre confiance et espérons vous revoir bientôt.</p>
 
     <p>Cordialement,<br>L'équipe de votre Boutique</p>
 </body>
 </html>
-

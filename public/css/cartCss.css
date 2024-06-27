@@ -232,3 +232,30 @@
   background-color: #0062cb;
   transition: 0.2s;
 }
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+}
+
+.cart-item-quantity .quantity-btn {
+  margin: 0 5px;
+}
+
+.total-price-for-item {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.button.button-disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  pointer-events: none; 
+}
+
+
+#loginMessage {
+  color: red;
+}
+

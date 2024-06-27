@@ -19,7 +19,10 @@ class CartListener
 
     public function onKernelController(ControllerEvent $event)
     {
-        $this->twig->addGlobal('cart', $this->cartService->getCart());
-        $this->twig->addGlobal('cartTotal', $this->cartService->getTotal());
+        $cart = $this->cartService->getCart();
+        $cartTotal = $this->cartService->getTotal();
+
+        $this->twig->addGlobal('cart', $cart);
+        $this->twig->addGlobal('cartTotal', $cartTotal);
     }
 }

@@ -12,7 +12,8 @@
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        {# Token CSRF pour les requêtes AJAX #}
+        <meta name="csrf-token" content="{{ csrf_token('csrf_token_id') }}">
         <title>{% block title %}Bienvenue{% endblock %}</title>
         {# <link rel="icon" href="{{ asset('img/') }}"> #}
         
@@ -46,7 +47,9 @@
       
 
     {% block javascripts %}
-        <script src="{{ asset('js/panier.js') }}"></script>
+    <script src="{{ asset('js/ajaxCart.js') }}"></script>
+    <script src="{{ asset('js/panier.js') }}"></script>
+    <script src="{{ asset('js/calendar.js') }}"></script>
     {% endblock %}
 
     </body>

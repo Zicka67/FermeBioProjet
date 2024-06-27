@@ -41,6 +41,8 @@ class TimeSlotController extends AbstractController
                     throw new \Exception('Invalid date format');
                 }
                 $timeSlot = new TimeSlot();
+                //comment rajouter un jour à la date
+                $formattedDate->modify('+1 day'); //+1 pour contrer le "bug" en base de donnée qui mettait -1 jour
                 $timeSlot->setDate($formattedDate);
                 $timeSlot->setPeriod($period);
                 $timeSlot->setAvailable(true);
@@ -89,6 +91,7 @@ class TimeSlotController extends AbstractController
                         ->context([
                             'user' => $user,
                             'cart' => $cartData,
+                            'timeslot' => $timeSlot,
                         ]);
 
                     $mailer->send($email);

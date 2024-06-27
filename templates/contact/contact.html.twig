@@ -1,16 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contacts{% endblock %}
-
-{% block body_class %}page-color{% endblock %}
+{% block title %}Contact{% endblock %}
 
 {% block body %}
-
-{% block bandeau %}
-<div class="bandeau-info">
-    <h1 class="bandeau-title">Contactez-nous</h1>
-</div>
-{% endblock %}
 
     {% for label, messages in app.flashes %}
         <div class="alert alert-{{ label }}">

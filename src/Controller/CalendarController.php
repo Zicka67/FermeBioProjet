@@ -45,7 +45,6 @@ class CalendarController extends AbstractController
 
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $currentDate = new \DateTime("$year-$month-$day");
-            $currentDate->modify('+1 day'); // Ajouter un jour pour corriger le décalage sinon ca ne fonctionne pas
 
             $dayTimeSlots = array_filter($timeSlots, function($slot) use ($currentDate) {
                 return $slot->getDate()->format('Y-m-d') === $currentDate->format('Y-m-d');
