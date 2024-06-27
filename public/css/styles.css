@@ -80,15 +80,16 @@ h1 {
 
 nav {
     background-color: bisque;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     display: flex;
     justify-content: space-between;
+    margin-top: 50px;
 }
 
-.nav-left, .nav-center, .nav-right {
+/* .nav-left, .nav-center, .nav-right {
   display: flex;
-}
+} */
 
 .nav-left {
   margin-left: 10px;
@@ -110,9 +111,8 @@ nav {
   visibility: visible;
 }
 
-
 .nav-center {
-  padding-right: 150px;
+  margin-right: 80px;
 }
 
 .nav-center a {
@@ -147,10 +147,10 @@ footer {
   align-items: center;
 }
 
-.footer-left, .footer-center, .footer-right {
+/* .footer-left, .footer-center, .footer-right {
     display: flex;
     align-items: center;
-}
+} */
 
 .footer-right a {
     margin-left: 10px;
