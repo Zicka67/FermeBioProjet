@@ -223,6 +223,11 @@
     display: block;
 }
 
+#loginMessage {
+  color: red;
+}
+
+
 #pickupOption:hover {
   background-color: #0062cb;
   transition: 0.2s;
@@ -254,8 +259,16 @@
   pointer-events: none; 
 }
 
-
-#loginMessage {
-  color: red;
+.button.disabled {
+  background-color: grey;
+  cursor: not-allowed;
 }
+
+.button-disabled {
+  background-color: #d3d3d3;
+  color: #666;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 

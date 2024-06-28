@@ -6,6 +6,7 @@ use App\Entity\Cart;
 use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\CartItem;
+use App\Service\CartService;
 use Symfony\Component\Mime\Address;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,21 +21,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CartController extends AbstractController
 {
-    // #[Route('/panier', name: 'app_cart')]
-    // public function showCart(SessionInterface $session): Response
-    // {
-    //     $cart = json_decode($session->get('cart', json_encode([])), true);
+    private $cartService;
 
-    //     $total = 0;
-    //     foreach ($cart as $item) {
-    //         $total += $item['product']['productPrice'] * $item['quantity'];
-    //     }
-
-    //     return $this->render('panier/index.html.twig', [
-    //         'cart' => $cart,
-    //         'total' => $total,
-    //     ]);
-    // }
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
 
     #[Route('/add-to-cart/{id}', name: 'add_to_cart')]
     public function addToCart($id, ProductRepository $productRepository, SessionInterface $session, Request $request): Response
@@ -190,5 +182,12 @@ class CartController extends AbstractController
         }
 
         return $this->redirectToRoute('app_cart');
+    }
+
+    #[Route('/get-cart-total', name: 'get_cart_total', methods: ['GET'])]
+    public function getCartTotal(): JsonResponse
+    {
+        $total = $this->cartService->getTotal();
+        return new JsonResponse(['status' => 'success', 'cartTotal' => $total]);
     }
 }

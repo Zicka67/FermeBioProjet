@@ -48,7 +48,9 @@
       
 
     {% block javascripts %}
-    <script src="{{ asset('js/carrousel.js') }}"></script>
+    {% if app.request.get('_route') == 'app_home' %}
+        <script src="{{ asset('js/carrousel.js') }}"></script>
+    {% endif %}
     <script src="{{ asset('js/ajaxCart.js') }}"></script>
     <script src="{{ asset('js/panier.js') }}"></script>
     <script src="{{ asset('js/calendar.js') }}"></script>

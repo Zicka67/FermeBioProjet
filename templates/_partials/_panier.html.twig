@@ -13,44 +13,56 @@
             </div>
         {% endfor %}
     {% endif %}
-    {% if cart is defined and cart|length > 0 %}
-        {% for item in cart %}
-            <div class="cart-item">
-                <div class="cart-item-details">
-                    <div>
-                        <strong>{{ item.product.name }}</strong><br>
-                        {{ item.product.productPrice }} €
+    {% if cart is defined %}
+        {% if cart|length > 0 %}
+            {% for item in cart %}
+                <div class="cart-item">
+                    <div class="cart-item-details">
+                        <div>
+                            <strong>{{ item.product.name }}</strong><br>
+                            {{ item.product.productPrice }} €
+                        </div>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <button class="quantity-btn decrement" data-product-id="{{ item.product.id }}">-</button>
+                        <span>{{ item.quantity }}</span>
+                        <button class="quantity-btn increment" data-product-id="{{ item.product.id }}">+</button>
+                        <span class="total-price-for-item">{{ (item.product.productPrice * item.quantity)|number_format(2, '.', ',') }} €</span>
                     </div>
                 </div>
-                <div class="cart-item-quantity">
-                    <button class="quantity-btn decrement" data-product-id="{{ item.product.id }}">-</button>
-                    <span>{{ item.quantity }}</span>
-                    <button class="quantity-btn increment" data-product-id="{{ item.product.id }}">+</button>
-                    <span class="total-price-for-item">{{ (item.product.productPrice * item.quantity)|number_format(2, '.', ',') }} €</span>
-                </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <p class="empty-cart-message">Votre panier est vide.</p>
+        {% endif %}
         <div class="cart-footer">   
             <div class="subtotal">
                 <span>Vous devrez payer sur place :</span>
                 <span id="cart-total">{{ cartTotal|number_format(2, '.', ',') }} €</span>
             </div>
             <div class="cart-buttons">
-                {# Si l'utilisateur est co #}
                 {% if app.user %}
-                <button id="reset-button" class="button">Réinitialiser le panier</button>
-                    <a id="pickupOption" href="#" class="button">Sélectionner le jour</a>
-                {# Si l'utilisateur est PAS co #}
+                    <button id="reset-button" class="button">Réinitialiser le panier</button>
+                    <a id="pickupOption" href="#" class="button {% if cart|length == 0 %}button-disabled{% endif %}">Sélectionner le jour</a>
                 {% else %}
-                <button id="reset-button" class="button">Réinitialiser le panier</button>
+                    <button id="reset-button" class="button">Réinitialiser le panier</button>
                     <p id="loginMessage">Vous devez vous connecter pour poursuivre.</p>
-                    <a class="button" href="{{ path('contact') }}">Me connecter</a>
+                    <a class="button" href="{{ path('app_login') }}">Me connecter</a>
                     <a id="pickupOption" href="#" class="button button-disabled">Sélectionner le jour</a>
                 {% endif %}
             </div>
         </div>
     {% else %}
         <p class="empty-cart-message">Votre panier est vide.</p>
+        <div class="cart-footer">   
+            <div class="subtotal">
+                <span>Vous devrez payer sur place :</span>
+                <span id="cart-total">0,00 €</span>
+            </div>
+            <div class="cart-buttons">
+                <button id="reset-button" class="button">Réinitialiser le panier</button>
+                <a id="pickupOption" href="#" class="button button-disabled">Sélectionner le jour</a>
+            </div>
+        </div>
     {% endif %}
 </div>
 <div class="pickup-details-page">
@@ -68,4 +80,3 @@
     </div>
     <button id="validateOrderButton" class="validate-order-button">Valider la commande</button>
 </div>
-
