@@ -29,12 +29,12 @@ class CartController extends AbstractController
     }
 
     #[Route('/add-to-cart/{id}', name: 'add_to_cart')]
-    public function addToCart($id, ProductRepository $productRepository, SessionInterface $session, Request $request): Response
+    public function addToCart($id, ProductRepository $productRepository, SessionInterface $session, Request $request): JsonResponse
     {
         $product = $productRepository->find($id);
 
         if (!$product) {
-            throw $this->createNotFoundException('Le produit n\'existe pas.');
+            return new JsonResponse(['status' => 'error', 'message' => 'Le produit n\'existe pas.'], Response::HTTP_NOT_FOUND);
         }
 
         $cart = json_decode($session->get('cart', json_encode([])), true);
@@ -66,13 +66,13 @@ class CartController extends AbstractController
 
         $session->set('cart', json_encode($cart));
 
-        $referer = $request->headers->get('referer');
-        if ($referer) {
-            return $this->redirect($referer);
-        }
+        $total = array_reduce($cart, function($carry, $item) {
+            return $carry + ($item['product']['productPrice'] * $item['quantity']);
+        }, 0);
 
-        return $this->redirectToRoute('app_cart');
+        return new JsonResponse(['status' => 'success', 'cart' => $cart, 'cartTotal' => $total]);
     }
+
 
     #[Route('/increment-quantity/{id}', name: 'increment_quantity', methods: ['POST'])]
     public function incrementQuantity($id, SessionInterface $session): JsonResponse

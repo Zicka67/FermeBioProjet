@@ -7,11 +7,12 @@
     <h1>Fruits</h1>
     <ul>
         {% for fruit in fruits %}
-            <li>{{ fruit.name }} - {{ fruit.productPrice }} €</li>
-            <a href="{{ path('add_to_cart', { 'id': fruit.id }) }}">Ajouter au panier</a>
-        {% else %}
-            <li>Aucun fruit disponible pour le moment.</li>
-        {% endfor %}
+        <li>{{ fruit.name }} - {{ fruit.productPrice }} €</li>
+        <a href="{{ path('add_to_cart', { 'id': fruit.id }) }}" class="add-to-cart" data-product-id="{{ fruit.id }}">Ajouter au panier</a>
+    {% else %}
+        <li>Aucun fruit disponible pour le moment.</li>
+    {% endfor %}
+    
     </ul>
 
 {% endblock %}
