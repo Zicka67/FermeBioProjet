@@ -77,24 +77,32 @@ h1 {
 
 /* *********** NAV ******************  */
 
+/* .logo-site {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+} */
+
 nav {
-    background-color: bisque;
+    background-color: rgb(254, 237, 219);
     padding-top: 30px;
     padding-bottom: 30px;
     display: flex;
     justify-content: space-between;
-    margin-top: 50px;
+    /* margin-top: 50px; */
 }
 
 .nav-left {
   margin-left: 10px;
-  font-size: 1.5rem;
+  font-size: 2.2rem;
+  font-family: "Amatic SC", sans-serif;
+  font-weight: bold;
 }
 
 .nav-right {
   margin-right: 10px;
   position: relative;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .nav-right a {
@@ -107,12 +115,12 @@ nav {
 }
 
 .nav-center {
-  margin-right: 80px;
+  margin-right: 120px;
 }
 
 .nav-center a {
   margin: 0 10px;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 400;
 }
 
@@ -259,6 +267,81 @@ a {
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* *********** PRODUITS ************* */
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.sidebar h2 {
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 10px;
+  height: 50px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 50px;
+}
+
+.sidebar ul li {
+  margin: 20px 0;
+  
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.sidebar ul li a.active {
+  color: #000; 
+  font-weight: bold; 
+}
+
+.nav-center a.active {
+  color: #000; 
+  font-weight: bold; 
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.header {
+  /* background-image: url('image.png');  */
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.header h1 {
+  margin-top: 0;
+}
+
+.products {
+  margin-top: 20px;
 }
 
 

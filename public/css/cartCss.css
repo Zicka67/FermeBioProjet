@@ -68,7 +68,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%; /* Assurez-vous que la hauteur est de 100% pour l'alignement vertical */
+    height: 100%; 
     border-top: 1px solid #eee;
     padding-top: 20px;
 }

@@ -1,11 +1,12 @@
 <nav>
     <div class="nav-left">
         <a href="{{ path('app_home') }}">Moulin des pierres</a>
+        {# <img class="logo-site" src="{{ asset('img/logoferme.webp') }}" alt=""> #}
     </div>
     <div class="nav-center">
         <a href="{{ path('app_home') }}">Accueil</a>
-        <a href="{{ path('app_fruits') }}">Nos fruits</a>
-        <a href="{{ path('app_legumes') }}">Nos légumes</a>
+        <a href="{{ path('app_fruits') }}" class="{% if app.request.attributes.get('_route') == 'app_fruits' %}active{% endif %}">Fruits</a>
+        <a href="{{ path('app_legumes') }}" class="{% if app.request.attributes.get('_route') == 'app_legumes' %}active{% endif %}">Légumes</a>
         <a href="javascript:void(0)" class="toggle-cart">Panier</a>
         {# <a href="{{ path('app_cart') }}">🛒Panier</a>  #}
         {# <a href="{{ path('app_calendar') }}">Calendrier</a> #}

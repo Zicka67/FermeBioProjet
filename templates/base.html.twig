@@ -15,7 +15,7 @@
         {# Token CSRF pour les requêtes AJAX #}
         <meta name="csrf-token" content="{{ csrf_token('csrf_token_id') }}">
         <title>{% block title %}Bienvenue{% endblock %}</title>
-        {# <link rel="icon" href="{{ asset('img/') }}"> #}
+        <link rel="icon" href="{{ asset('img/logoferme.webp') }}">
         
         {# CSS #}
         <link rel="stylesheet" href="{{ asset('css/cartCss.css') }}">
@@ -25,6 +25,9 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+        {# <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet"> #}
+
         {# SCRIPT #}
 
         {% block stylesheets %}

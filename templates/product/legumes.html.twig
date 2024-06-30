@@ -3,16 +3,36 @@
 {% block title %}Nos légumes{% endblock %}
 
 {% block body %}
-
-    <h1>Légumes</h1>
-    <ul>
-        {% for legume in legumes %}
-            <li>{{ legume.name }} - {{ legume.productPrice }} €</li>
-            <a href="{{ path('add_to_cart', { 'id': legume.id }) }}" class="add-to-cart" data-product-id="{{ legume.id }}">Ajouter au panier</a>
-        {% else %}
-            <li>Aucun fruit disponible pour le moment.</li>
-        {% endfor %}
-    </ul>
-            
-
+<div class="container"> 
+    <nav class="sidebar">
+        <h2>Produits</h2>
+        <ul>
+            <li><a href="{{ path('app_fruits') }}" class="{% if app.request.attributes.get('_route') == 'app_fruits' %}active{% endif %}">Fruits</a></li>
+            <li><a href="{{ path('app_legumes') }}" class="{% if app.request.attributes.get('_route') == 'app_legumes' %}active{% endif %}">Légumes</a></li>
+            <li><a href="#">Viandes</a></li>
+            <li><a href="#">Miels</a></li>
+            <li><a href="#">Lien 1</a></li>
+            <li><a href="#">Lien 2</a></li>
+            <li><a href="#">Lien 3</a></li>
+            <li><a href="#">Lien 4</a></li>
+            <li><a href="#">Lien 5</a></li>
+            <li><a href="#">Lien 6</a></li>
+            <li><a href="#">Lien 7</a></li>
+            <li><a href="#">Lien 8</a></li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="products">
+            <h1>Légumes</h1>
+            <ul>
+                {% for legume in legumes %}
+                <li>{{ legume.name }} - {{ legume.productPrice }} €</li>
+                <a href="{{ path('add_to_cart', { 'id': legume.id }) }}" class="add-to-cart" data-product-id="{{ legume.id }}">Ajouter au panier</a>
+                {% else %}
+                <li>Aucun légumes disponible pour le moment.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </main>
+</div>
 {% endblock %}

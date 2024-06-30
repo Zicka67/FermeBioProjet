@@ -6,18 +6,22 @@
 
 <div class="home-container">
     <div class="carousel">
-        <img src="img/image1.jpg" class="active">
-        <img src="img/image2.jpg">
-        <img src="img/image3.jpg">
-        {# <img src="img/image3.jpg"> #}
-        <button onclick="nextImage()">Next</button>
+        <div class="carousel-overlay">
+            <div class="carousel-text">
+                <h2>AVANTAGES POUR LES NOUVEAUX MEMBRES</h2>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque, fugiat eaque laudantium labore esse pariatur a sint quam illum. Pariatur voluptatum quasi asperiores laudantium cum, doloribus facilis assumenda non quam!</p>
+                <button>RENDRE l'IMAGE CAROUSEL PARALAX</button>
+            </div>
+        </div>
+        <img src="img/ferme1.jpg" class="active">
+        <img src="img/ferme2.jpg">
+        <img src="img/ferme3.jpg">
+        <button class="carousel-button-prev" onclick="prevImage()">Prev</button>
+        <button class="carousel-button-next" onclick="nextImage()">Next</button>
     </div>
 </div>
 
 <div class="secondary-container">
-
-
 </div>
 
 {% endblock %}
-
