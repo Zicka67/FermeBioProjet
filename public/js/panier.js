@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (calendarCartTotalElement) {
                     calendarCartTotalElement.innerText = formattedTotal;
                 }
-                updatePickupButtonState(); 
+                updatePickupButtonState();
             } else {
                 console.error('Erreur lors de la mise à jour du total du panier:', data.message);
             }
@@ -55,9 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Mettre à jour l'interface utilisateur après la réinitialisation du panier
                 updateCartUI([], 0);
-                updatePickupButtonState(); 
             } else {
                 console.error('Erreur lors de la réinitialisation du panier:', data.message);
             }
@@ -121,10 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-    
         // Réattache les écouteurs d'événements
         attachEventListeners();
-        updatePickupButtonState(); 
+        updatePickupButtonState();
     }
 
     function addToCart(productId) {
@@ -139,9 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Met à jour l'interface utilisateur du panier après ajout
                 updateCartUI(data.cart, data.cartTotal);
-                updatePickupButtonState(); // Update the button state after adding an item
             } else {
                 console.error('Erreur lors de l\'ajout au panier:', data.message);
             }
@@ -165,40 +160,40 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Met à jour l'interface utilisateur du panier après modification
                 updateCartUI(data.cart, data.cartTotal);
-                updatePickupButtonState(); 
             } else {
                 console.error('Erreur lors de la mise à jour de la quantité:', data.message);
             }
         })
-        .catch(error => console.error('Erreur:', error));
+        .catch(error => {
+            console.error('Erreur:', error);
+        });
     }
 
     function attachEventListeners() {
-        // Supprime les anciens écouteurs pour éviter les doublons
+        // Nettoye les anciens écouteurs d'événements pour éviter les doublons
         document.querySelectorAll('.quantity-btn').forEach(button => {
-            var newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-        });
-
-        document.querySelectorAll('.quantity-btn').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                const productId = this.dataset.productId;
-                const action = this.classList.contains('increment') ? 'increment' : 'decrement';
-                updateQuantity(productId, action);
-            });
+            button.removeEventListener('click', handleQuantityButtonClick);
+            button.addEventListener('click', handleQuantityButtonClick);
         });
 
         if (resetButton) {
-            var newResetButton = resetButton.cloneNode(true);
-            resetButton.parentNode.replaceChild(newResetButton, resetButton);
-            newResetButton.addEventListener('click', function(event) {
-                event.preventDefault();
-                resetCart();
-            });
+            resetButton.removeEventListener('click', handleResetButtonClick);
+            resetButton.addEventListener('click', handleResetButtonClick);
         }
+    }
+
+    function handleQuantityButtonClick(event) {
+        event.preventDefault();
+        const button = event.currentTarget;
+        const productId = button.dataset.productId;
+        const action = button.classList.contains('increment') ? 'increment' : 'decrement';
+        updateQuantity(productId, action);
+    }
+
+    function handleResetButtonClick(event) {
+        event.preventDefault();
+        resetCart();
     }
 
     window.toggleCart = function() {
