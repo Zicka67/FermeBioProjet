@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const observer = new MutationObserver(function(mutationsList, observer) {
         for (const mutation of mutationsList) {
             if (mutation.type === 'childList') {
-                // Réattacher les événements dès qu'un changement est détecté dans le DOM
+                // Réattache les événements dès qu'un changement est détecté dans le DOM
                 attachEventListeners();
             }
         }
