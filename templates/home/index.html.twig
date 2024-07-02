@@ -3,25 +3,32 @@
 {% block title %}HomePage{% endblock %}
 
 {% block body %}
-
 <div class="home-container">
     <div class="carousel">
         <div class="carousel-overlay">
             <div class="carousel-text">
-                <h2>AVANTAGES POUR LES NOUVEAUX MEMBRES</h2>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque, fugiat eaque laudantium labore esse pariatur a sint quam illum. Pariatur voluptatum quasi asperiores laudantium cum, doloribus facilis assumenda non quam!</p>
-                <button>RENDRE l'IMAGE CAROUSEL PARALAX</button>
+                <h2 id="dynamicTitle">AVANTAGES POUR LES NOUVEAUX MEMBRES</h2>
+                <p id="dynamicDescription">Lorem ipsum dolor sit amet...</p>
+                <button id="dynamicButton">RENDRE l'IMAGE CAROUSEL PARALAX</button>
             </div>
         </div>
-        <img src="img/ferme1.jpg" class="active">
-        <img src="img/ferme2.jpg">
-        <img src="img/ferme3.jpg">
+        {% for text in dynamicTexts %}
+            <img src="{{ asset('img/ferme' ~ loop.index ~ '.jpg') }}" class="{{ loop.first ? 'active' : '' }}" data-id="{{ text.id }}">
+        {% endfor %}
         <button class="carousel-button-prev" onclick="prevImage()">Prev</button>
         <button class="carousel-button-next" onclick="nextImage()">Next</button>
     </div>
 </div>
-
 <div class="secondary-container">
 </div>
+
+<script>
+    var dynamicTexts = {{ dynamicTexts|map(text => ({
+        'id': text.id,
+        'buttonText': text.buttonText,
+        'blurredSectionText': text.blurredSectionText,
+        'blurredSectionTitle': text.blurredSectionTitle
+    }))|json_encode|raw }};
+</script>
 
 {% endblock %}

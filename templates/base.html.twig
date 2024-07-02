@@ -53,6 +53,7 @@
     {% block javascripts %}
     {% if app.request.get('_route') == 'app_home' %}
         <script src="{{ asset('js/carrousel.js') }}"></script>
+        <script src="{{ asset('js/dynamicText.js') }}"></script>
     {% endif %}
     <script src="{{ asset('js/ajaxCart.js') }}"></script>
     <script src="{{ asset('js/panier.js') }}"></script>

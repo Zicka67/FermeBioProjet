@@ -1,14 +1,88 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Sélectionne les éléments du DOM nécessaires pour le calendrier
     var pickupOption = document.getElementById('pickupOption');
     var pickupDetailsPage = document.querySelector('.pickup-details-page');
     var closeCalendarButton = document.querySelector('.close-calendar');
     var calendarContainer = document.getElementById('calendarContainer');
+    var validateOrderButton = document.getElementById('validateOrderButton');
     var selectedDate = null;
     var selectedPeriod = null;
     var pickupTotalElement = document.getElementById('pickupTotal');
+    var currentDate = new Date();
 
-    // Fonction pour mettre à jour le total à récupérer
+    // Utilise un MutationObserver pour détecter les changements dans le DOM
+    const observer = new MutationObserver(function(mutationsList, observer) {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                // Réattacher les événements dès qu'un changement est détecté dans le DOM
+                attachEventListeners();
+            }
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Attache les événements nécessaires aux éléments du DOM
+    function attachEventListeners() {
+        if (pickupOption) {
+            // Supprime tout ancien événement avant de les réattacher
+            pickupOption.removeEventListener('click', handlePickupOptionClick);
+            pickupOption.addEventListener('click', handlePickupOptionClick);
+        }
+
+        if (closeCalendarButton) {
+            closeCalendarButton.removeEventListener('click', handleCloseCalendar);
+            closeCalendarButton.addEventListener('click', handleCloseCalendar);
+        }
+
+        if (validateOrderButton) {
+            validateOrderButton.removeEventListener('click', handleValidateOrder);
+            validateOrderButton.addEventListener('click', handleValidateOrder);
+        }
+    }
+
+    // Gère l'ouverture de la section des détails de récupération et affiche le calendrier
+    function handlePickupOptionClick() {
+        pickupDetailsPage.classList.toggle('open');
+        if (pickupDetailsPage.classList.contains('open')) {
+            renderCalendar(currentDate);
+            updatePickupTotal();
+        }
+    }
+
+    // Gère la fermeture de la section des détails de récupération
+    function handleCloseCalendar() {
+        pickupDetailsPage.classList.remove('open');
+    }
+
+    // Gère la validation de la commande
+    function handleValidateOrder() {
+        if (selectedDate && selectedPeriod) {
+            fetch('/reserve-slot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    date: selectedDate,
+                    period: selectedPeriod,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    alert('Erreur lors de la réservation : ' + (data.message || 'undefined'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Une erreur est survenue lors de la réservation.');
+            });
+        }
+    }
+
+    // Met à jour le total de récupération en récupérant les données du serveur
     function updatePickupTotal() {
         fetch('/get-cart-total', {
             method: 'GET',
@@ -32,101 +106,74 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Ouvre/ferme la page des détails de récupération
-    if (pickupOption && !pickupOption.classList.contains('button-disabled')) {
-        pickupOption.addEventListener('click', function () {
-            pickupDetailsPage.classList.toggle('open');
-            if (pickupDetailsPage.classList.contains('open')) {
-                // Génère le calendrier à l'ouverture
-                calendarContainer.innerHTML = `
-                    <h2>${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Lun</th>
-                                <th>Mar</th>
-                                <th>Mer</th>
-                                <th>Jeu</th>
-                                <th>Ven</th>
-                                <th>Sam</th>
-                                <th>Dim</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${generateCalendar(new Date())}
-                        </tbody>
-                    </table>
-                `;
+    // Génère et affiche le calendrier pour le mois donné
+    function renderCalendar(date) {
+        calendarContainer.innerHTML = `
+            <div class="calendar-header">
+                <button id="prevMonth">&lt;</button>
+                <h2>${date.toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
+                <button id="nextMonth">&gt;</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lun</th>
+                        <th>Mar</th>
+                        <th>Mer</th>
+                        <th>Jeu</th>
+                        <th>Ven</th>
+                        <th>Sam</th>
+                        <th>Dim</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${generateCalendar(date)}
+                </tbody>
+            </table>
+        `;
 
-                // Ajoute des écouteurs d'événements aux boutons de créneaux horaires
-                document.querySelectorAll('.time-slot-button').forEach(button => {
-                    button.addEventListener('click', function() {
-                        selectedDate = this.dataset.date;
-                        selectedPeriod = this.dataset.period;
-            
-                        document.getElementById('validateOrderButton').classList.add('show');
-                    });
-                });
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar(currentDate);
+        });
 
-                // Valide la commande avec le créneau sélectionné
-                document.getElementById('validateOrderButton').addEventListener('click', function() {
-                    if (selectedDate && selectedPeriod) {
-                        fetch('/reserve-slot', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                date: selectedDate,
-                                period: selectedPeriod,
-                            }),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                window.location.href = data.redirectUrl;
-                            } else {
-                                alert('Erreur lors de la réservation : ' + (data.message || 'undefined'));
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Une erreur est survenue lors de la réservation.');
-                        });
-                    }
-                });
-            }
-            updatePickupTotal();  // Met à jour le total du panier lors de l'ouverture de la section calendrier
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar(currentDate);
+        });
+
+        document.querySelectorAll('.time-slot-button').forEach(button => {
+            button.addEventListener('click', function() {
+                selectedDate = this.dataset.date;
+                selectedPeriod = this.dataset.period;
+                if (validateOrderButton) {
+                    validateOrderButton.classList.add('show');
+                }
+            });
         });
     }
 
-    // Ferme la page des détails de récupération
-    closeCalendarButton.addEventListener('click', function() {
-        pickupDetailsPage.classList.remove('open');
-    });
+    // Génère le HTML pour le calendrier d'un mois donné
+    function generateCalendar(date) {
+        let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+        firstDayOfMonth = (firstDayOfMonth + 6) % 7;
 
-    // Génère le calendrier pour le mois actuel
-    function generateCalendar(currentDate) {
-        let daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-        let firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-        firstDayOfMonth = (firstDayOfMonth + 6) % 7; // Commencer la semaine le lundi
-    
         let calendarHTML = '';
         let day = 1;
-        for (let i = 0; i < 6; i++) { // 6 semaines affichées en calendrier
+        for (let i = 0; i < 6; i++) {
             calendarHTML += '<tr>';
-            for (let j = 0; j < 7; j++) { // 7 jours par semaine
+            for (let j = 0; j < 7; j++) {
                 if (i === 0 && j < firstDayOfMonth) {
                     calendarHTML += '<td></td>';
                 } else if (day <= daysInMonth) {
-                    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    
+                    const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
                     calendarHTML += `
-                        <td class="${currentDate.getDate() === day ? 'today' : ''} td-hover">
+                        <td class="${date.getDate() === day ? 'today' : ''} td-hover">
                             <div class="date">${day}</div>
                             <div class="slots">
-                                <button class="slot morning time-slot-button" data-date="${date.toISOString().split('T')[0]}" data-period="Matin">Matin</button>
-                                <button class="slot afternoon time-slot-button" data-date="${date.toISOString().split('T')[0]}" data-period="Après-midi">Après-midi</button>
+                                <button class="slot morning time-slot-button" data-date="${dayDate.toISOString().split('T')[0]}" data-period="Matin">Matin</button>
+                                <button class="slot afternoon time-slot-button" data-date="${dayDate.toISOString().split('T')[0]}" data-period="Après-midi">Après-midi</button>
                             </div>
                         </td>`;
                     day++;
@@ -138,4 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return calendarHTML;
     }
+
+    // Initialise les événements et les états au chargement de la page
+    attachEventListeners();
 });
