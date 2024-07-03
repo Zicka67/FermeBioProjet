@@ -41,10 +41,10 @@
             </div>
             <div class="cart-buttons">
                 {% if app.user %}
-                    <button id="reset-button" class="button">Réinitialiser le panier</button>
+                    <a id="reset-button" href="#" class="button">Réinitialiser le panier</a>
                     <a id="pickupOption" href="#" class="button {% if cart|length == 0 %}button-disabled{% endif %}">Sélectionner le jour</a>
                 {% else %}
-                    <button id="reset-button" class="button">Réinitialiser le panier</button>
+                    <a id="reset-button" href="#" class="button">Réinitialiser le panier</a>
                     <p id="loginMessage">Vous devez vous connecter pour poursuivre.</p>
                     <a class="button" href="{{ path('app_login') }}">Me connecter</a>
                     <a id="pickupOption" href="#" class="button button-disabled">Sélectionner le jour</a>
