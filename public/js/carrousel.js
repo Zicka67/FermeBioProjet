@@ -44,5 +44,4 @@ function prevImage() {
 
 let autoSlideInterval = setInterval(showNextImage, 5000);
 
-// Initialize dynamic text on page load
 updateDynamicText();
