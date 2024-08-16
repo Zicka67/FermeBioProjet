@@ -101,8 +101,10 @@ nav {
 
 .nav-right {
   margin-right: 10px;
-  position: relative;
+  /* position: relative; */
   font-size: 1.5rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .nav-right a {
@@ -130,7 +132,7 @@ a {
 }
 
 #register {
-  margin-right: 100px;
+  margin-right: 130px;
 }
 
 /* ************* FOOTER ******************  */
