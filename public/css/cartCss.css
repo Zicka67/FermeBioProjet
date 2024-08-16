@@ -85,9 +85,9 @@
 }
 
 .cart-buttons {
-    display: flex;
+    /* display: flex; */
     justify-content: space-between;
-    width: 100%; /* Pour que les boutons s'étendent sur toute la largeur du conteneur */
+    width: 100%; 
     margin-top: 10px;
 }
 
@@ -225,12 +225,17 @@
 
 #loginMessage {
   color: red;
+  margin-bottom: 20px;
 }
 
 
 #pickupOption:hover {
   background-color: #0062cb;
   transition: 0.2s;
+}
+
+#reset-button {
+  margin-bottom: 20px;
 }
 
 #reset-button:hover {
